@@ -1,0 +1,247 @@
+mlKitralFuelModel<-function(model=NULL,predictors=NULL,
+file.out.lab=NULL,
+blockSize=200){
+
+#-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+#Doing verifications
+#-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+
+#cheeking predictor condition
+if(is.null(predictors)==TRUE){stop("predictors are required")}
+
+if(class(predictors)[1]!="SpatRaster"){stop("predictors must be of class SpatRaster")}
+
+if(is.null(file.out.lab)==TRUE){filename.out="KitralFuelsDistribution_out.tif"}else {
+   filename.out<-paste0("KitralFuelsDistribution_",file.out.lab,".tif")}
+
+#cheeking predictor variables condition
+#most by the same order of columns for model predictions
+vars<- c(
+  "landform", "aspect", #"elevation", 
+  "slope", "TPI", 
+  "evi_min_P1", "evi_max_P1", "evi_sd_P1", "VH_P1", "VV_P1", 
+  "red_P1", "green_P1", "blue_P1", "R1_P1", "R2_P1", 
+  "R3_P1", "nir_P1", "R4_P1", "swir1_P1", "swir2_P1", 
+  "ndvi_P1", "ndbi_P1", "ndwi_P1", "evi_P1", "evi_min_P2", 
+  "evi_max_P2", "evi_sd_P2", "VH_P2", "VV_P2", "red_P2", 
+  "green_P2", "blue_P2", "R1_P2", "R2_P2", "R3_P2", 
+  "nir_P2", "R4_P2", "swir1_P2", "swir2_P2", "ndvi_P2", 
+  "ndbi_P2", "ndwi_P2", "evi_P2", "evi_min_P3", "evi_max_P3", 
+  "evi_sd_P3", "VH_P3", "VV_P3", "red_P3", "green_P3", 
+  "blue_P3", "R1_P3", "R2_P3", "R3_P3", "nir_P3", "R4_P3", 
+  "swir1_P3", "swir2_P3", "ndvi_P3", "ndbi_P3", "ndwi_P3", 
+  "evi_P3", "region_code"
+)
+
+if(length(vars[!vars%in%names(predictors)])>0){
+stop(c(paste0("Some predictors are missing: "),paste(vars[!vars%in%names(predictors)],collapse=", ")))}
+
+#ckecking if there is a lookup table
+if(!file.exists("kitral_lookup_table-modified.csv")){stop("Kitral lookup table not found, please put a file named 'kitral_lookup_table-modified.csv' in working directory")} 
+ 
+#cheeking libraries condition
+if(!require(data.table)){stop("data.table package is required, please install it")}else{
+require(data.table)}
+
+if(!require(readr)){stop("readr package is required, please install it")}else{
+require(readr)}
+
+if(!require(terra)){stop("terra package is required, please install it")}else{
+  require(terra)}
+
+if(!require(raster)){stop("raster package is required, please install it")}else{
+  require(raster)}
+
+if(!require(parallel)){stop("parallel package is required, please install it")}else{
+  require(parallel)}
+
+if(!require(stringr)){stop("stringr package is required, please install it")}else{
+  require(stringr)}
+
+if(!require(xgboost)){stop("xgboost package is required, please install it")}else{
+  require(xgboost)}
+#-----------------------------------------------------------
+
+
+#-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+#Doing temporal folders
+#-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+
+# folds for temporal files
+fold.name <- "temp.csv"
+if (!dir.exists(fold.name)) {
+dir.create(fold.name)}
+
+# Create a temporary directory for terra
+fold.name.t <- "temp.terra"
+if (!dir.exists(fold.name.t)) {
+dir.create(fold.name.t)}
+
+fold.name.r <- "temp.r"
+if (!dir.exists(fold.name.r)) {
+dir.create(fold.name.r)}
+#-----------------------------------------------------------
+
+
+#-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+# Transform raster to data.frame by chunks
+#-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+
+# Saving raster properties
+nrows.r = nrow(predictors)
+ncols.r = ncol(predictors)
+extent.r = ext(predictors)
+crs.r = crs(predictors)
+
+# Define block size and number of chunks
+block_size <- blockSize  # Adjust based on memory
+num_chunks <- ceiling(nrows.r / block_size) # Número total de fragmentos
+
+readStart(predictors)
+
+#Preparing data for predictions
+for(i in 1:num_chunks){
+     message(paste("Preparing data for predictions in chunks. ","Chunk", i, "of", num_chunks))
+     start_row <- (i - 1) * block_size + 1
+     end_row <- min(start_row + block_size - 1, nrows.r)
+     nrows_block <- end_row - start_row + 1
+
+     # Read values
+     valores <- terra::readValues(predictors, start_row, nrows_block, 1, ncol(predictors), TRUE)
+    
+     # Get cell coordinates
+     celdas <- unlist(raster::cellFromRow(predictors, start_row:end_row))
+     coords <- xyFromCell(predictors, celdas)
+
+     # Create data.frame and write
+     df <- data.frame(coords, valores)%>%na.omit()
+
+     write.csv(df,paste(fold.name,"/",i,sep=""),row.names=FALSE)
+
+}
+rm(predictors)
+rm(df)
+rm(celdas)
+rm(coords)
+rm(valores)
+#-----------------------------------------------------------
+
+
+#-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+# Doing predictions with XGBOOST 
+#-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+message("Loading model")
+imported_model <- xgb.load(model)
+
+files.h<-list.files(path=fold.name)
+for(i in 1:length(files.h)){
+porcentaje_progreso <- round((i / length(files.h)) * 100, 1)
+ message(paste("Predicting chunk", i, "of", length(files.h)))
+d.h<-fread(paste(fold.name,"/",files.h[i],sep=""))%>%as.data.frame
+
+#filtring region_code
+d.h$`region_code.1`<-0
+d.h$`region_code.2`<-0
+d.h$`region_code.3`<-0
+
+if(length(d.h[d.h$region_code==1,"region_code"])>=1){
+d.h[d.h$region_code==1,"region_code.1"]<-1
+}
+if(length(d.h[d.h$region_code==2,"region_code"])>=1){
+d.h[d.h$region_code==2,"region_code.2"]<-1
+}
+if(length(d.h[d.h$region_code==3,"region_code"])>=1){
+d.h[d.h$region_code==3,"region_code.3"]<-1
+}
+
+
+#predictors as matrix
+m1<-as.matrix(d.h[,c(vars[!vars%in%"region_code"],c("region_code.1", "region_code.2", "region_code.3"))])
+colnames(m1)
+
+#as xgboost matrix()
+m1 <- xgb.DMatrix(data = m1)
+
+#Predecir probabilidades
+pred<-predict(imported_model,m1)
+
+#Convertir el vector plano en una matriz (filas: observaciones, columnas: clases)
+pred_xgb_matrix <- matrix(pred, ncol = 32, byrow = TRUE) #32 is the number of classes
+
+#Obtener clase predicha como la de mayor probabilidad
+pred_xgb_numeric <- max.col(pred_xgb_matrix) - 1  # Las clases empiezan en 0 en XGBoost
+
+# Convertir a factor con niveles y etiquetas originales
+#most be the same as the original order of leves
+predict <- factor(pred_xgb_numeric, levels = 0:(32 - 1), 
+labels = c("PL10", "PL09", "PL11", "SV02", "MT03", "PL08", "PL05", "PL04", "PL02", "SV01",
+  "PCH4", "PCH2", "MT01", "PCH1", "PL01", "SV03", "MT02", "DX02", "BN05", "BN04",
+  "MT04", "MT07", "MT06", "PL07", "PCH5", "PL03", "DX01", "BN03", "PL06", "PCH3",
+  "BN01", "MT08"))
+
+pred.h<-as.data.frame(predict)
+
+pred.h$id<-1:nrow(pred.h)
+
+#Estos pasos es para que el valor de la clase corresponda a lo que reconoce C2F+W
+kitral_keys<-read.csv("kitral_lookup_table-modified.csv")
+names(kitral_keys)[4]<-"predict"
+pred3<-merge(pred.h,kitral_keys[,c(4,1)],by="predict",all.x=TRUE) 
+pred3<-pred3[order(pred3$id),]
+
+r.h <- rast(nrows = nrows.r,
+                     ncols = ncols.r,
+                     extent = extent.r,
+                     crs = crs.r)
+
+values(r.h) <- NA
+
+cell_indices <- cellFromXY(r.h, d.h[,c("x", "y")])
+
+values(r.h)[cell_indices] <- pred3[, "grid_value"]
+
+terra::writeRaster(r.h, paste(fold.name.r,"/",i,".tif",sep=""), overwrite = TRUE)
+
+#free memory
+rm(pred.h); rm(pred3); rm(r.h); rm(pred_xgb_matrix); rm(pred_xgb_numeric); rm(d.h); rm(m1)
+gc()
+
+message(paste(porcentaje_progreso, "% completed"))
+}
+#-----------------------------------------------------------
+
+
+#-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+# Doing final mosaic
+#-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+
+files.h<-list.files(path=fold.name.r)
+#mosaic raster
+for(j in 1:length(files.h)){
+message(paste("Doing final mosaic. Worinkg on raster",j,"of",length(files.h)))
+d.h<-rast(paste("temp.r/",files.h[j],sep=""))
+if(j==1){r.out<-d.h}else{r.out<-mosaic(r.out,d.h, fun = "sum")}}
+
+#save raster
+message("Saving raster with final mosaic")
+writeRaster(r.out,filename = filename.out,overwrite = TRUE)
+
+message("Removing temporal files and folders")
+
+#Deleting temp.r folder
+if (dir.exists(fold.name.r)) {
+  unlink(fold.name.r, recursive = TRUE)
+}
+#Deleting temp.csv folder
+if (dir.exists(fold.name)) {
+  unlink(fold.name, recursive = TRUE)
+}
+#Deleting temp.terra folder
+if (dir.exists(fold.name.t)) {
+  unlink(fold.name.t, recursive = TRUE)
+}
+
+message("Done! The output raster is saved as ", filename.out)
+#-----------------------------------------------------------
+}
