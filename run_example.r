@@ -44,7 +44,7 @@ folder_id <- as_id("https://drive.google.com/drive/folders/1JOoBhg3Y01grglIS9TTI
 #as_id("https://drive.google.com/drive/folders/1L2nps9bWAK38A6icc0MeppOVULHcYFUX") # maule
 #as_id("https:/</drive.google.com/drive/folders/1rEdZIARjlNRxYLA-zynC--IIcrnWhLA6") #bio bio
 
-# List files in the folder (only files for P3 temporal variables and avoiding evi, temperature and precipitation)
+# List files in the folder
 archivos <- drive_ls(path = folder_id)
 
 #Filtring files (variables) to that are predictors in the model
@@ -70,7 +70,7 @@ codigo_maule <- 2
 codigo_nuble <- 3
 regionCode<-codigo_nuble
 
-#Making raster stack for bio bio region but only with P3 temporal variables
+#Making raster stack for region 
 d2 <- list.files("temp.dc")
 
 #raster stack
