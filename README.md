@@ -8,7 +8,7 @@ This script provides a working example of how to use the complete prediction pip
 
 ### Part 1: Creating Predictor Data
 
-This section demonstrates how to build the required input `SpatRaster` object from the "data cuve" files for a specific region.
+This section demonstrates how to build the required input `SpatRaster` object from the "data cube" files for a specific region.
 
 * **Setup**: It begins by loading necessary R packages such as `googledrive` and `terra`, and authenticating a Google account. It also configures `terra` options to manage memory by using a temporary directory on disk.
 * **Data Download**: The script downloads remote sensing data from a specified Google Drive folder. It filters the file list to exclude auxiliary (`aux.xml`) and climate-related files that are not used as predictors. The files are saved into a temporary folder named `temp.dc`.
