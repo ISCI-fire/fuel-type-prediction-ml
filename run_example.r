@@ -1,11 +1,11 @@
 # #-----------------------------------------------------------
 # # Proyecto: PINC230018 (Desafios 2024) 
 
-# # Ejemplo de como aplicar la funcion con el modelo de random forest ajustado para 
+# # Ejemplo de como aplicar la funcion con el modelo XGBoost ajustado para 
 # # predecir la distribución espacial de tipos de combustibles segun kitral usando como predictores variables 
 # # de sensores remotos.
 
-# # Se usa la data cuve de la region de biobio como ejemplo
+# # Se usa la data cube de la region de biobio como ejemplo
 
 # # Si bien se require de un solo raster (de clase "SpatRaster") donde cada layer es un predictor requierido,
 # # el ejemplo muestra como crear dicho raster a partir de los rasters que traen la info por separado
@@ -35,10 +35,10 @@ terraOptions(
 
 
 # #-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
-# #Downloading data cuve from F2A google drive and prepraing raster stack for model input
+# #Downloading data cube from F2A google drive and prepraing raster stack for model input
 # #-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
 
-#Downloading data cuve region del bio bio
+#Downloading data cube region
 # ID of folder in Google Drive
 folder_id <- as_id("https://drive.google.com/drive/folders/1JOoBhg3Y01grglIS9TTIJxXH4rSKmroi")#nuble
 #as_id("https://drive.google.com/drive/folders/1L2nps9bWAK38A6icc0MeppOVULHcYFUX") # maule
