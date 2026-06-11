@@ -30,7 +30,7 @@ vars<- c(
   "evi_sd_P3", "VH_P3", "VV_P3", "red_P3", "green_P3", 
   "blue_P3", "R1_P3", "R2_P3", "R3_P3", "nir_P3", "R4_P3", 
   "swir1_P3", "swir2_P3", "ndvi_P3", "ndbi_P3", "ndwi_P3", 
-  "evi_P3", "region_code"
+  "evi_P3"
 )
 
 if(length(vars[!vars%in%names(predictors)])>0){
@@ -58,8 +58,8 @@ if(!require(parallel)){stop("parallel package is required, please install it")}e
 if(!require(stringr)){stop("stringr package is required, please install it")}else{
   require(stringr)}
 
-if(!require(xgboost)){stop("xgboost package is required, please install it")}else{
-  require(xgboost)}
+if(!require(reticulate)){stop("reticulate package is required, please install it")}else{
+  require(reticulate)}
 #-----------------------------------------------------------
 
 
@@ -132,7 +132,12 @@ rm(valores)
 #-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 message("Loading model")
-imported_model <- xgb.load(model)
+model_abs <- if (file.exists(model)) normalizePath(model, winslash = "/") else file.path(getwd(), model)
+if (!reticulate::py_available()) reticulate::use_condaenv("xgb_convert", required = TRUE)
+xgb_py        <- reticulate::import("xgboost")
+np            <- reticulate::import("numpy")
+imported_model <- xgb_py$Booster()
+imported_model$load_model(model_abs)
 
 files.h<-list.files(path=fold.name)
 for(i in 1:length(files.h)){
@@ -140,31 +145,16 @@ porcentaje_progreso <- round((i / length(files.h)) * 100, 1)
  message(paste("Predicting chunk", i, "of", length(files.h)))
 d.h<-fread(paste(fold.name,"/",files.h[i],sep=""))%>%as.data.frame
 
-#filtring region_code
-d.h$`region_code.1`<-0
-d.h$`region_code.2`<-0
-d.h$`region_code.3`<-0
-
-if(length(d.h[d.h$region_code==1,"region_code"])>=1){
-d.h[d.h$region_code==1,"region_code.1"]<-1
-}
-if(length(d.h[d.h$region_code==2,"region_code"])>=1){
-d.h[d.h$region_code==2,"region_code.2"]<-1
-}
-if(length(d.h[d.h$region_code==3,"region_code"])>=1){
-d.h[d.h$region_code==3,"region_code.3"]<-1
-}
-
-
 #predictors as matrix
-m1<-as.matrix(d.h[,c(vars[!vars%in%"region_code"],c("region_code.1", "region_code.2", "region_code.3"))])
+m1<-as.matrix(d.h[,vars])
 colnames(m1)
 
-#as xgboost matrix()
-m1 <- xgb.DMatrix(data = m1)
-
-#Predecir probabilidades
-pred<-predict(imported_model,m1)
+# Predict via Python (bypasses R readBin >2GB limit)
+m1_np   <- np$array(m1, dtype = "float32")
+dm      <- xgb_py$DMatrix(data = m1_np)
+py_pred <- imported_model$predict(dm)
+# Python returns (n_samples, 32) matrix; flatten row-major to match original flat-vector format
+pred <- if (is.matrix(py_pred)) c(t(py_pred)) else as.vector(py_pred)
 
 #Convertir el vector plano en una matriz (filas: observaciones, columnas: clases)
 pred_xgb_matrix <- matrix(pred, ncol = 32, byrow = TRUE) #32 is the number of classes
@@ -204,7 +194,7 @@ values(r.h)[cell_indices] <- pred3[, "grid_value"]
 terra::writeRaster(r.h, paste(fold.name.r,"/",i,".tif",sep=""), overwrite = TRUE)
 
 #free memory
-rm(pred.h); rm(pred3); rm(r.h); rm(pred_xgb_matrix); rm(pred_xgb_numeric); rm(d.h); rm(m1)
+rm(pred.h); rm(pred3); rm(r.h); rm(pred_xgb_matrix); rm(pred_xgb_numeric); rm(d.h); rm(m1); rm(m1_np); rm(dm); rm(py_pred)
 gc()
 
 message(paste(porcentaje_progreso, "% completed"))

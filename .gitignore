@@ -1,0 +1,9 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+xgb_model_*
+temp.csv/
+temp.terra/
+temp.r/
+*.tif

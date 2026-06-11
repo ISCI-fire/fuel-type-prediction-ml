@@ -63,14 +63,7 @@ for (i in seq_len(nrow(archivos))) {
 }
 #-----------------------------------------------------------
 
-#Regions code, it is a dummy variable predictor nedded by the model
-#So model works well only for predicting fuel distribution for this regions
-codigo_biobio<- 1
-codigo_maule <- 2
-codigo_nuble <- 3
-regionCode<-codigo_nuble
-
-#Making raster stack for region 
+#Making raster stack for region
 d2 <- list.files("temp.dc")
 
 #raster stack
@@ -82,16 +75,9 @@ out[[i]]<-d.h
 }
 d_biobio<-rast(out)
 
-#Adding layer ass region code
-r.h <- d_biobio[[1]] # Usar el primer predictor como plantilla para la extensión/resolución
-values(r.h) <- regionCode #need to be for the specific region
-names(r.h) <- "region_code" # Predictor name
-r.h2 <- terra::mask(x = r.h, mask = d_biobio[[1]])
-d_biobio_f <- rast(list(d_biobio, r.h2))
-
 #saving raster
-writeRaster(d_biobio_f,"regionDC.tif",overwrite=TRUE)
-rm(d_biobio); rm(d2); rm(out); rm(r.h); rm(d_biobio_f)
+writeRaster(d_biobio,"regionDC.tif",overwrite=TRUE)
+rm(d_biobio); rm(d2); rm(out)
 gc()
 
 #removing temp.dc foler
