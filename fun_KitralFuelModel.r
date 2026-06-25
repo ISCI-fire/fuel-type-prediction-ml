@@ -17,20 +17,16 @@ if(is.null(file.out.lab)==TRUE){filename.out="KitralFuelsDistribution_out.tif"}e
 #cheeking predictor variables condition
 #most by the same order of columns for model predictions
 vars<- c(
-  "landform", "aspect", #"elevation", 
-  "slope", "TPI", 
-  "evi_min_P1", "evi_max_P1", "evi_sd_P1", "VH_P1", "VV_P1", 
-  "red_P1", "green_P1", "blue_P1", "R1_P1", "R2_P1", 
-  "R3_P1", "nir_P1", "R4_P1", "swir1_P1", "swir2_P1", 
-  "ndvi_P1", "ndbi_P1", "ndwi_P1", "evi_P1", "evi_min_P2", 
-  "evi_max_P2", "evi_sd_P2", "VH_P2", "VV_P2", "red_P2", 
-  "green_P2", "blue_P2", "R1_P2", "R2_P2", "R3_P2", 
-  "nir_P2", "R4_P2", "swir1_P2", "swir2_P2", "ndvi_P2", 
-  "ndbi_P2", "ndwi_P2", "evi_P2", "evi_min_P3", "evi_max_P3", 
-  "evi_sd_P3", "VH_P3", "VV_P3", "red_P3", "green_P3", 
-  "blue_P3", "R1_P3", "R2_P3", "R3_P3", "nir_P3", "R4_P3", 
-  "swir1_P3", "swir2_P3", "ndvi_P3", "ndbi_P3", "ndwi_P3", 
-  "evi_P3"
+  "landform", "aspect", "slope", "TPI",
+  "VH_P1",    "VV_P1",    "ndvi_P1",  "ndbi_P1",  "ndwi_P1",
+  "red_P1",   "green_P1", "blue_P1",  "R1_P1",    "R2_P1",
+  "R3_P1",    "nir_P1",   "R4_P1",    "swir1_P1", "swir2_P1",
+  "VH_P2",    "VV_P2",    "ndvi_P2",  "ndbi_P2",  "ndwi_P2",
+  "red_P2",   "green_P2", "blue_P2",  "R1_P2",    "R2_P2",
+  "R3_P2",    "nir_P2",   "R4_P2",    "swir1_P2", "swir2_P2",
+  "VH_P3",    "VV_P3",    "ndvi_P3",  "ndbi_P3",  "ndwi_P3",
+  "red_P3",   "green_P3", "blue_P3",  "R1_P3",    "R2_P3",
+  "R3_P3",    "nir_P3",   "R4_P3",    "swir1_P3", "swir2_P3"
 )
 
 if(length(vars[!vars%in%names(predictors)])>0){
