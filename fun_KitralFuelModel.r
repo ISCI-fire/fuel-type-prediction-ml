@@ -1,6 +1,6 @@
 mlKitralFuelModel<-function(model=NULL,predictors=NULL,
 file.out.lab=NULL,
-blockSize=200){
+blockSize=NULL){
 
 #-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
 #Doing verifications
@@ -147,7 +147,7 @@ colnames(m1)
 
 # Predict via Python (bypasses R readBin >2GB limit)
 m1_np   <- np$array(m1, dtype = "float32")
-dm      <- xgb_py$DMatrix(data = m1_np)
+dm      <- xgb_py$DMatrix(data = m1_np, feature_names = vars)
 py_pred <- imported_model$predict(dm)
 # Python returns (n_samples, 32) matrix; flatten row-major to match original flat-vector format
 pred <- if (is.matrix(py_pred)) c(t(py_pred)) else as.vector(py_pred)
