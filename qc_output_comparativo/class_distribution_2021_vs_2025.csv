@@ -1,0 +1,33 @@
+value,fuel_type,descriptive_name,area_ha_2021,pct_of_valid_2021,area_ha_2025,pct_of_valid_2025,diff_ha,diff_pct_relative,diff_pct_points
+16,BN03,Arbolado Nativo Denso,138177.45,6.44,226019.34,10.54,87841.9,63.6,4.1
+11,MT06,Formaciones con predominancia de Ulex spp,5030.1,0.23,60672.33,2.83,55642.2,1106.2,2.6
+6,MT01,Matorrales y Arbustos Mesomorficos Densos,61293.6,2.86,9335.97,0.44,-51957.6,-84.8,-2.42
+5,PCH5,Chacareria. Vinedos y Frutales,221529.06,10.33,175837.68,8.2,-45691.4,-20.6,-2.13
+17,BN04,Arbolado Nativo de Densidad Media,14937.3,0.7,60546.69,2.82,45609.4,305.3,2.12
+34,SV03,Terrenos Desnudos,825869.88,38.52,862305.48,40.23,36435.6,4.4,1.71
+7,MT02,Matorrales y Arbustos Mesomorficos Medios y Ralos,164050.74,7.65,131729.67,6.15,-32321.1,-19.7,-1.5
+19,PL01,Plantaciones Coniferas Nuevas (0-3) sin Manejo,235499.31,10.98,203309.55,9.48,-32189.8,-13.7,-1.5
+30,DX01,Desechos Explotacion a Tala Rasa de Plantaciones,32357.16,1.51,7218,0.34,-25139.2,-77.7,-1.17
+12,MT07,Renovales Nativos diferentes al Tipo Siempreverde,26310.06,1.23,6159.78,0.29,-20150.3,-76.6,-0.94
+1,PCH1,Pastizales Mesomorficos Densos,9526.05,0.44,24706.44,1.15,15180.4,159.4,0.71
+23,PL05,Plantaciones Coniferas Jovenes (4-11) con Manejo,18631.8,0.87,4899.06,0.23,-13732.7,-73.7,-0.64
+29,PL11,Plantaciones Latifoliadas y Mixtas,30493.08,1.42,18911.61,0.88,-11581.5,-38,-0.54
+26,PL08,Plantaciones Eucaliptos Nuevas (0-3),13421.88,0.63,2422.98,0.11,-10998.9,-81.9,-0.52
+4,PCH4,Pastizales Higromorficos Ralos,10225.8,0.48,1406.61,0.07,-8819.2,-86.2,-0.41
+33,SV02,Cascos Urbanos,186540.48,8.7,193606.29,9.03,7065.8,3.8,0.33
+2,PCH2,Pastizales Mesoomorficos Ralos,61166.97,2.85,54244.8,2.53,-6922.2,-11.3,-0.32
+22,PL04,Plantaciones Coniferas Mayores (>17) sin Manejo,5374.89,0.25,10498.86,0.49,5124,95.3,0.24
+24,PL06,Plantaciones Coniferas Adultas (12-17) con Manejo,17590.41,0.82,21975.57,1.03,4385.2,24.9,0.21
+3,PCH3,Pastizales Higromorficos Densos,11700.27,0.55,7370.91,0.34,-4329.4,-37,-0.21
+21,PL03,Plantaciones Coniferas Adultas (12-17) sin Manejo,8618.22,0.4,12903.75,0.6,4285.5,49.7,0.2
+32,SV01,Cuerpos de Agua,13331.43,0.62,17369.91,0.81,4038.5,30.3,0.19
+20,PL02,Plantaciones Coniferas Jovenes (4-11) sin Manejo,7846.92,0.37,11591.28,0.54,3744.4,47.7,0.17
+25,PL07,Plantaciones Coniferas Mayores (>17) sin Manejo,4652.01,0.22,1615.86,0.08,-3036.2,-65.3,-0.14
+28,PL10,Plantaciones Eucalipto Adultas (>10),5209.02,0.24,2424.6,0.11,-2784.4,-53.5,-0.13
+18,BN05,Arbolado Nativo de Densidad Baja,1188.72,0.06,3480.03,0.16,2291.3,192.8,0.1
+9,MT04,Matorrales y Arbustos Higromorificos Medios y Ralos,3095.55,0.14,857.52,0.04,-2238,-72.3,-0.1
+27,PL09,Plantaciones Eucaliptos Jovenes (4-10),9563.58,0.45,7729.29,0.36,-1834.3,-19.2,-0.09
+8,MT03,Matorrales y Arbustos Higromorficos Densos,333.81,0.02,1118.34,0.05,784.5,235,0.03
+13,MT08,Renovales Nativos del Tipo Siempreverde,491.49,0.02,1051.83,0.05,560.3,114,0.03
+14,BN01,Formaciones con predominancia de Alerzales,80.82,0,200.34,0.01,119.5,147.9,0.01
+31,DX02,Desechos Explotacion a Tala Rasa de Bosque Nativo,19.26,0,92.16,0,72.9,378.5,0
