@@ -7,4 +7,8 @@ temp.csv/
 temp.terra/
 temp.r/
 *.tif
-INFORME_AngloAmerican_SOFOFA.md
+*.tif.aux.xml
+INFORME*.md
+INFORME*.pdf
+Mapa Preliminar de Combustibles.png
+mapa_preliminar_combustibles.png

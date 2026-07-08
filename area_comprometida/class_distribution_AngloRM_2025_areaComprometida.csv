@@ -1,0 +1,33 @@
+value,layer,count,descriptive_name,fuel_type,area_ha,pct_of_valid
+5,1,895106,Chacareria. Vinedos y Frutales,PCH5,80559.54,18.82
+16,1,754199,Arbolado Nativo Denso,BN03,67877.91,15.85
+7,1,600452,Matorrales y Arbustos Mesomorficos Medios y Ralos,MT02,54040.68,12.62
+33,1,526079,Cascos Urbanos,SV02,47347.11,11.06
+19,1,518991,Plantaciones Coniferas Nuevas (0-3) sin Manejo,PL01,46709.19,10.91
+17,1,237774,Arbolado Nativo de Densidad Media,BN04,21399.66,5
+34,1,211240,Terrenos Desnudos,SV03,19011.6,4.44
+2,1,199621,Pastizales Mesoomorficos Ralos,PCH2,17965.89,4.2
+11,1,180038,Formaciones con predominancia de Ulex spp,MT06,16203.42,3.78
+1,1,97662,Pastizales Mesomorficos Densos,PCH1,8789.58,2.05
+24,1,92497,Plantaciones Coniferas Adultas (12-17) con Manejo,PL06,8324.73,1.94
+32,1,71699,Cuerpos de Agua,SV01,6452.91,1.51
+29,1,60125,Plantaciones Latifoliadas y Mixtas,PL11,5411.25,1.26
+3,1,46895,Pastizales Higromorficos Densos,PCH3,4220.55,0.99
+22,1,40397,Plantaciones Coniferas Mayores (>17) sin Manejo,PL04,3635.73,0.85
+20,1,36336,Plantaciones Coniferas Jovenes (4-11) sin Manejo,PL02,3270.24,0.76
+21,1,36077,Plantaciones Coniferas Adultas (12-17) sin Manejo,PL03,3246.93,0.76
+6,1,33970,Matorrales y Arbustos Mesomorficos Densos,MT01,3057.3,0.71
+27,1,18909,Plantaciones Eucaliptos Jovenes (4-10),PL09,1701.81,0.4
+18,1,17865,Arbolado Nativo de Densidad Baja,BN05,1607.85,0.38
+23,1,15718,Plantaciones Coniferas Jovenes (4-11) con Manejo,PL05,1414.62,0.33
+12,1,12006,Renovales Nativos diferentes al Tipo Siempreverde,MT07,1080.54,0.25
+30,1,10992,Desechos Explotacion a Tala Rasa de Plantaciones,DX01,989.28,0.23
+25,1,8537,Plantaciones Coniferas Mayores (>17) sin Manejo,PL07,768.33,0.18
+28,1,8136,Plantaciones Eucalipto Adultas (>10),PL10,732.24,0.17
+26,1,7270,Plantaciones Eucaliptos Nuevas (0-3),PL08,654.3,0.15
+8,1,5070,Matorrales y Arbustos Higromorficos Densos,MT03,456.3,0.11
+4,1,4898,Pastizales Higromorficos Ralos,PCH4,440.82,0.1
+9,1,3902,Matorrales y Arbustos Higromorificos Medios y Ralos,MT04,351.18,0.08
+13,1,3599,Renovales Nativos del Tipo Siempreverde,MT08,323.91,0.08
+14,1,1047,Formaciones con predominancia de Alerzales,BN01,94.23,0.02
+31,1,232,Desechos Explotacion a Tala Rasa de Bosque Nativo,DX02,20.88,0
