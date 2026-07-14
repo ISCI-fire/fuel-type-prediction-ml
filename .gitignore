@@ -12,3 +12,7 @@ INFORME*.md
 INFORME*.pdf
 Mapa Preliminar de Combustibles.png
 mapa_preliminar_combustibles.png
+
+# Logs de corrida
+*.log
+qc_output_log.txt

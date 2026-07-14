@@ -7,7 +7,10 @@
 # ── Configuración ─────────────────────────────────────────────────────────────
 CLEAN_TEMP <- FALSE   # TRUE: elimina carpetas temp.csv / temp.r / temp.terra antes de correr
 
-dc_path    <- "G:/Mi unidad/dc Anglo American 2025"
+dc_path    <- "G:/Mi unidad/dc Anglo American 2025 EVIfix"   # cubo regenerado con fix-EVI (0.3b)
+# Bandas de distancia (Fase 2b) para la grilla RM (misma grilla que el cubo 2025 EVIfix)
+DIST_RM    <- "C:/No_nube/modelingFuelsKitral/pisos_vegetacionales/dist_rasters/rm"
+DIST_BANDS <- c("dist_matorral", "dist_alerce", "dist_siempreverde", "dist_caducifolio")
 model_path <- "C:/No_nube/modelingFuelsKitral/xgb_fuels_model/model_kitral_angloamerican.json"
 output_lab <- "AngloRM_2025"
 block_size <- 100
@@ -71,6 +74,17 @@ out <- lapply(seq_along(archivos), function(i) {
 })
 r_anglo <- rast(out)
 rm(out); gc()
+
+# ── Agregar bandas de distancia a distribucion de especies (Fase 2b) ──────────
+# Comparten grilla exacta con el cubo RM (2021/2025); se apilan directo.
+dist_stack <- rast(lapply(DIST_BANDS, function(b) {
+  x <- rast(file.path(DIST_RM, paste0(b, ".tif")))
+  names(x) <- b
+  x
+}))
+r_anglo <- c(r_anglo, dist_stack)
+rm(dist_stack); gc()
+# ──────────────────────────────────────────────────────────────────────────────
 
 message("Stack listo. Capas: ", nlyr(r_anglo))
 message("Nombres: ", paste(names(r_anglo), collapse = ", "))
