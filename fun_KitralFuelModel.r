@@ -1,6 +1,7 @@
 mlKitralFuelModel<-function(model=NULL,predictors=NULL,
 file.out.lab=NULL,
-blockSize=NULL){
+blockSize=NULL,
+id.fuel=NULL){
 
 #-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
 #Doing verifications
@@ -14,23 +15,15 @@ if(class(predictors)[1]!="SpatRaster"){stop("predictors must be of class SpatRas
 if(is.null(file.out.lab)==TRUE){filename.out="KitralFuelsDistribution_out.tif"}else {
    filename.out<-paste0("KitralFuelsDistribution_",file.out.lab,".tif")}
 
-#cheeking predictor variables condition
-#most by the same order of columns for model predictions
-vars<- c(
-  "landform", "aspect", "slope", "TPI",
-  "VH_P1",    "VV_P1",    "ndvi_P1",  "ndbi_P1",  "ndwi_P1",
-  "red_P1",   "green_P1", "blue_P1",  "R1_P1",    "R2_P1",
-  "R3_P1",    "nir_P1",   "R4_P1",    "swir1_P1", "swir2_P1",
-  "VH_P2",    "VV_P2",    "ndvi_P2",  "ndbi_P2",  "ndwi_P2",
-  "red_P2",   "green_P2", "blue_P2",  "R1_P2",    "R2_P2",
-  "R3_P2",    "nir_P2",   "R4_P2",    "swir1_P2", "swir2_P2",
-  "VH_P3",    "VV_P3",    "ndvi_P3",  "ndbi_P3",  "ndwi_P3",
-  "red_P3",   "green_P3", "blue_P3",  "R1_P3",    "R2_P3",
-  "R3_P3",    "nir_P3",   "R4_P3",    "swir1_P3", "swir2_P3"
-)
+# NOTA (Fase 4.1): 'vars' (predictores, en el orden exacto) y las etiquetas de
+# clase ya NO se hardcodean. Se derivan del propio modelo (feature_names embebidos
+# en el .json) y de id_fuel.csv más abajo, tras cargar el modelo — elimina la
+# fuente histórica de bugs de orden. La validación de que el raster de entrada
+# contenga todos los predictores también se hace ahí.
 
-if(length(vars[!vars%in%names(predictors)])>0){
-stop(c(paste0("Some predictors are missing: "),paste(vars[!vars%in%names(predictors)],collapse=", ")))}
+# id_fuel.csv: por defecto junto al modelo (../ respecto a la carpeta xgb_fuels_model/)
+if(is.null(id.fuel)) id.fuel <- file.path(dirname(dirname(model)), "id_fuel.csv")
+if(!file.exists(id.fuel)) stop("id_fuel.csv not found: ", id.fuel, " (pass it via id.fuel=)")
 
 #ckecking if there is a lookup table
 if(!file.exists("kitral_lookup_table-modified.csv")){stop("Kitral lookup table not found, please put a file named 'kitral_lookup_table-modified.csv' in working directory")} 
@@ -56,6 +49,43 @@ if(!require(stringr)){stop("stringr package is required, please install it")}els
 
 if(!require(reticulate)){stop("reticulate package is required, please install it")}else{
   require(reticulate)}
+#-----------------------------------------------------------
+
+
+#-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+# Cargar modelo y DERIVAR vars + etiquetas de clase (Fase 4.1)
+#-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+message("Loading model")
+model_abs <- if (file.exists(model)) normalizePath(model, winslash = "/") else file.path(getwd(), model)
+if (!reticulate::py_available()) reticulate::use_condaenv("xgb_convert", required = TRUE)
+xgb_py         <- reticulate::import("xgboost")
+np             <- reticulate::import("numpy")
+imported_model <- xgb_py$Booster()
+imported_model$load_model(model_abs)
+
+# vars = predictores en el ORDEN EXACTO del modelo (feature_names embebidos).
+# No hardcodear: el .json de xgboost 3.x guarda los nombres de la DMatrix de
+# entrenamiento. as.character por si reticulate devuelve una lista de Python.
+vars <- as.character(imported_model$feature_names)
+if (length(vars) == 0 || all(is.na(vars))) {
+  stop("El modelo no tiene feature_names embebidos; no se puede derivar 'vars'. ",
+       "Reentrenar guardando la DMatrix con nombres de columna.")
+}
+message("Predictores derivados del modelo: ", length(vars))
+
+# Validar que el raster de predictores contenga todas las variables del modelo
+faltan <- vars[!vars %in% names(predictors)]
+if (length(faltan) > 0) {
+  stop("Faltan predictores en el raster de entrada: ", paste(faltan, collapse = ", "))
+}
+
+# Etiquetas de clase desde id_fuel.csv: la clase 0-based k -> idf$fuel[k+1]
+# (el índice de clase de xgboost sigue el orden de filas de id_fuel.csv, que es
+# el orden de niveles usado en el entrenamiento).
+idf           <- read.csv(id.fuel, stringsAsFactors = FALSE)
+labels_kitral <- as.character(idf$fuel)
+n_classes     <- length(labels_kitral)
+message("Clases derivadas de id_fuel.csv: ", n_classes)
 #-----------------------------------------------------------
 
 
@@ -127,14 +157,7 @@ rm(valores)
 # Doing predictions with XGBOOST 
 #-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
-message("Loading model")
-model_abs <- if (file.exists(model)) normalizePath(model, winslash = "/") else file.path(getwd(), model)
-if (!reticulate::py_available()) reticulate::use_condaenv("xgb_convert", required = TRUE)
-xgb_py        <- reticulate::import("xgboost")
-np            <- reticulate::import("numpy")
-imported_model <- xgb_py$Booster()
-imported_model$load_model(model_abs)
-
+# (modelo ya cargado arriba: imported_model, xgb_py, np, vars, labels_kitral, n_classes)
 files.h<-list.files(path=fold.name)
 for(i in 1:length(files.h)){
 porcentaje_progreso <- round((i / length(files.h)) * 100, 1)
@@ -153,18 +176,15 @@ py_pred <- imported_model$predict(dm)
 pred <- if (is.matrix(py_pred)) c(t(py_pred)) else as.vector(py_pred)
 
 #Convertir el vector plano en una matriz (filas: observaciones, columnas: clases)
-pred_xgb_matrix <- matrix(pred, ncol = 32, byrow = TRUE) #32 is the number of classes
+pred_xgb_matrix <- matrix(pred, ncol = n_classes, byrow = TRUE)
 
 #Obtener clase predicha como la de mayor probabilidad
 pred_xgb_numeric <- max.col(pred_xgb_matrix) - 1  # Las clases empiezan en 0 en XGBoost
 
-# Convertir a factor con niveles y etiquetas originales
-#most be the same as the original order of leves
-predict <- factor(pred_xgb_numeric, levels = 0:(32 - 1), 
-labels = c("PL10", "PL09", "PL11", "SV02", "MT03", "PL08", "PL05", "PL04", "PL02", "SV01",
-  "PCH4", "PCH2", "MT01", "PCH1", "PL01", "SV03", "MT02", "DX02", "BN05", "BN04",
-  "MT04", "MT07", "MT06", "PL07", "PCH5", "PL03", "DX01", "BN03", "PL06", "PCH3",
-  "BN01", "MT08"))
+# Convertir a factor con niveles y etiquetas derivadas de id_fuel.csv
+# (índice de clase 0-based k -> labels_kitral[k+1])
+predict <- factor(pred_xgb_numeric, levels = 0:(n_classes - 1),
+                  labels = labels_kitral)
 
 pred.h<-as.data.frame(predict)
 

@@ -1,8 +1,11 @@
 # Inferencia combustibles Kitral — Área Anglo American (RM), temporada 2025-2026
-# Modelo: model_kitral_angloamerican.json (eta=0.05, max_depth=12, nrounds=7000)
-#         Accu=76.3%, F1=71.2% en test set 30% — mismo modelo que la inferencia 2021, sin reentrenar
-#         (EVI no es predictor del modelo, así que el data cube 2025 solo renueva S1/S2/NDVI/NDBI/NDWI)
-# Data cube: G:/Mi unidad/dc Anglo American 2025
+# Modelo: model_kitral_angloamerican.json — REENTRENADO 2026-07-16 (Fase 3.3)
+#         eta=0.05, max_depth=12, mcw=1, best_iter=1492, 65 predictores
+#         (49 espectrales/topo + 12 EVI con fix + 4 dist_* de conocimiento experto).
+#         'vars' y etiquetas de clase se DERIVAN del modelo + id_fuel.csv (Fase 4.1).
+#         NOTA: la métrica de test aleatorio (96%) está inflada por autocorrelación
+#         espacial; el estimador honesto es la CV espacial (~46% F1).
+# Data cube: G:/Mi unidad/dc Anglo American 2025 EVIfix (con fix-EVI y las 4 dist_*)
 
 # ── Configuración ─────────────────────────────────────────────────────────────
 CLEAN_TEMP <- FALSE   # TRUE: elimina carpetas temp.csv / temp.r / temp.terra antes de correr
@@ -104,7 +107,8 @@ mlKitralFuelModel(
   model        = model_path,
   predictors   = r_anglo,
   file.out.lab = output_lab,
-  blockSize    = block_size
+  blockSize    = block_size,
+  id.fuel      = "C:/No_nube/modelingFuelsKitral/id_fuel.csv"
 )
 
 message("Raster de salida: KitralFuelsDistribution_", output_lab, ".tif")
