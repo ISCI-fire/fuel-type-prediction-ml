@@ -13,6 +13,10 @@ INFORME*.pdf
 Mapa Preliminar de Combustibles.png
 mapa_preliminar_combustibles.png
 
+# Backups locales (outputs de modelos previos, no versionar)
+area_comprometida/v1_model_backup/
+area_comprometida/attempt1_new_model_backup/
+
 # Logs de corrida
 *.log
 qc_output_log.txt

@@ -1,33 +1,32 @@
 value,layer,count,descriptive_name,fuel_type,area_ha,pct_of_valid
-5,1,895106,Chacareria. Vinedos y Frutales,PCH5,80559.54,18.82
-16,1,754199,Arbolado Nativo Denso,BN03,67877.91,15.85
-7,1,600452,Matorrales y Arbustos Mesomorficos Medios y Ralos,MT02,54040.68,12.62
-33,1,526079,Cascos Urbanos,SV02,47347.11,11.06
-19,1,518991,Plantaciones Coniferas Nuevas (0-3) sin Manejo,PL01,46709.19,10.91
-17,1,237774,Arbolado Nativo de Densidad Media,BN04,21399.66,5
-34,1,211240,Terrenos Desnudos,SV03,19011.6,4.44
-2,1,199621,Pastizales Mesoomorficos Ralos,PCH2,17965.89,4.2
-11,1,180038,Formaciones con predominancia de Ulex spp,MT06,16203.42,3.78
-1,1,97662,Pastizales Mesomorficos Densos,PCH1,8789.58,2.05
-24,1,92497,Plantaciones Coniferas Adultas (12-17) con Manejo,PL06,8324.73,1.94
-32,1,71699,Cuerpos de Agua,SV01,6452.91,1.51
-29,1,60125,Plantaciones Latifoliadas y Mixtas,PL11,5411.25,1.26
-3,1,46895,Pastizales Higromorficos Densos,PCH3,4220.55,0.99
-22,1,40397,Plantaciones Coniferas Mayores (>17) sin Manejo,PL04,3635.73,0.85
-20,1,36336,Plantaciones Coniferas Jovenes (4-11) sin Manejo,PL02,3270.24,0.76
-21,1,36077,Plantaciones Coniferas Adultas (12-17) sin Manejo,PL03,3246.93,0.76
-6,1,33970,Matorrales y Arbustos Mesomorficos Densos,MT01,3057.3,0.71
-27,1,18909,Plantaciones Eucaliptos Jovenes (4-10),PL09,1701.81,0.4
-18,1,17865,Arbolado Nativo de Densidad Baja,BN05,1607.85,0.38
-23,1,15718,Plantaciones Coniferas Jovenes (4-11) con Manejo,PL05,1414.62,0.33
-12,1,12006,Renovales Nativos diferentes al Tipo Siempreverde,MT07,1080.54,0.25
-30,1,10992,Desechos Explotacion a Tala Rasa de Plantaciones,DX01,989.28,0.23
-25,1,8537,Plantaciones Coniferas Mayores (>17) sin Manejo,PL07,768.33,0.18
-28,1,8136,Plantaciones Eucalipto Adultas (>10),PL10,732.24,0.17
-26,1,7270,Plantaciones Eucaliptos Nuevas (0-3),PL08,654.3,0.15
-8,1,5070,Matorrales y Arbustos Higromorficos Densos,MT03,456.3,0.11
-4,1,4898,Pastizales Higromorficos Ralos,PCH4,440.82,0.1
-9,1,3902,Matorrales y Arbustos Higromorificos Medios y Ralos,MT04,351.18,0.08
-13,1,3599,Renovales Nativos del Tipo Siempreverde,MT08,323.91,0.08
-14,1,1047,Formaciones con predominancia de Alerzales,BN01,94.23,0.02
-31,1,232,Desechos Explotacion a Tala Rasa de Bosque Nativo,DX02,20.88,0
+6,1,1122699,Matorrales y Arbustos Mesomorficos Densos,MT01,101042.91,23.58
+7,1,1034892,Matorrales y Arbustos Mesomorficos Medios y Ralos,MT02,93140.28,21.73
+1,1,861714,Pastizales Mesomorficos Densos,PCH1,77554.26,18.1
+5,1,792975,Chacareria. Vinedos y Frutales,PCH5,71367.75,16.65
+33,1,526271, Cascos Urbanos,SV02,47364.39,11.05
+12,1,155786,Renovales Nativos diferentes al Tipo Siempreverde,MT07,14020.74,3.27
+28,1,65152,Plantaciones Eucalipto Adultas (>10),PL10,5863.68,1.37
+2,1,50532,Pastizales Mesoomorficos Ralos,PCH2,4547.88,1.06
+32,1,38000,Cuerpos de Agua,SV01,3420.0,0.8
+21,1,29236,Plantaciones Coniferas Adultas (12-17) sin Manejo,PL03,2631.24,0.61
+34,1,28579,Terrenos Desnudos,SV03,2572.11,0.6
+16,1,21299,Arbolado Nativo Denso,BN03,1916.91,0.45
+24,1,10945,Plantaciones Coniferas Adultas (12-17) con Manejo,PL06,985.05,0.23
+3,1,7213,Pastizales Higromorficos Densos,PCH3,649.17,0.15
+23,1,5521,Plantaciones Coniferas Jovenes (4-11) con Manejo,PL05,496.89,0.12
+14,1,4167,Formaciones con predominancia de Alerzales,BN01,375.03,0.09
+19,1,1442,Plantaciones Coniferas Nuevas (0-3) sin Manejo,PL01,129.78,0.03
+9,1,896,Matorrales y Arbustos Higromorificos Medios y Ralos,MT04,80.64,0.02
+27,1,792,Plantaciones Eucaliptos Jovenes (4-10),PL09,71.28,0.02
+17,1,701,Arbolado Nativo de Densidad Media,BN04,63.09,0.01
+20,1,629,Plantaciones Coniferas Jovenes (4-11) sin Manejo,PL02,56.61,0.01
+4,1,623,Pastizales Higromorficos Ralos,PCH4,56.07,0.01
+18,1,466,Arbolado Nativo de Densidad Baja,BN05,41.94,0.01
+25,1,400,Plantaciones Coniferas Mayores (>17) sin Manejo,PL07,36.0,0.01
+31,1,273,Desechos Explotacion a Tala Rasa de Bosque Nativo,DX02,24.57,0.01
+22,1,106,Plantaciones Coniferas Mayores (>17) sin Manejo,PL04,9.54,0.0
+29,1,89,Plantaciones Latifoliadas y Mixtas,PL11,8.01,0.0
+30,1,25,Desechos Explotacion a Tala Rasa de Plantaciones,DX01,2.25,0.0
+11,1,1,Formaciones con predominancia de Ulex spp,MT06,0.09,0.0
+8,1,1,Matorrales y Arbustos Higromorficos Densos,MT03,0.09,0.0
+26,1,1,Plantaciones Eucaliptos Nuevas (0-3),PL08,0.09,0.0
