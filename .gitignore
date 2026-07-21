@@ -10,8 +10,8 @@ temp.r/
 *.tif.aux.xml
 INFORME*.md
 INFORME*.pdf
-Mapa Preliminar de Combustibles.png
-mapa_preliminar_combustibles.png
+Mapa Preliminar de Combustibles*.png
+mapa_preliminar_combustibles*.png
 
 # Backups locales (outputs de modelos previos, no versionar)
 area_comprometida/v1_model_backup/
